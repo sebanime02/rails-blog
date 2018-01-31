@@ -1,0 +1,18 @@
+- runners_by_artiste = artiste.runners.where(user_id: artiste.id).where(shortlist_id: @shortlist.id).where("state != 'dropped'").order('created_at DESC')
+- # If the artiste have a Headshot photo use it, if not use the first one
+- if artiste.assets.first
+  - asset_url = (artiste.assets.where(image_type: 'Headshot').first.nil?) ? artiste.assets.first.attachment.url(:medium) : artiste.assets.where(image_type: "Headshot").first.attachment.url(:medium)
+%tr.artiste-row{"data-tt-id" => "artiste_#{artiste.id}", id: "artiste_row_#{artiste.id}", data: {artiste_id: "#{artiste.id}"}}
+  %td{id: "artiste_cell_#{artiste.id}"}
+    %b
+      = link_to artiste.full_name, user_path(artiste), {class: 'styless-link treetable-link', target: "_blank", data: {toggle: "popover", html: "true", trigger: "hover", content: "<img class='img img-circle popover-img' src='#{asset_url}' />", placement: "bottom"}}
+    - # If any runner belonging to this artiste have been already selected by ad displays badge
+    - if artiste.runners.pluck(:already_selected_by_ad).uniq.include? true
+      %span.label.label-danger.artiste-ad-badge AD
+  %td
+  %td
+  %td
+  %td
+  %td
+- runners_by_artiste.each do |runner|
+  = render partial: 'shortlist_by_artiste_runner_row', locals: {runner: runner, artiste: artiste}

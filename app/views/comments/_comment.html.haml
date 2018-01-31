@@ -1,0 +1,7 @@
+%tr
+  %td
+    = comment.commenter
+  %td
+    = comment.body
+  %td
+    = link_to 'Destroy comment', [comment.article, comment], method: :delete, data: {confirm: 'Are you sure'}

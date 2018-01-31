@@ -1,0 +1,19 @@
+- selected_asset_left_id = @shortlist.twin_selected_assets[artiste.id.to_s].nil? ? nil : @shortlist.twin_selected_assets[artiste.id.to_s]['left']
+- selected_asset_right_id = @shortlist.twin_selected_assets[artiste.id.to_s].nil? ? nil : @shortlist.twin_selected_assets[artiste.id.to_s]['right']
+- artiste_assets = artiste.assets
+.col-xs-6
+  %div{id: "artiste_photos_carousel_#{artiste.id}_left", class: 'carousel carousel-left', data: {artiste_id: artiste.id}}
+    - artiste_assets.each do |asset|
+      - selected_class = (selected_asset_left_id == asset.id) ? 'item active' : 'item'
+      %div{class: selected_class}
+        .selected-indicator
+          Selected
+        = image_tag asset.attachment.url(:large), {id: "image-left-#{asset.id}", class: "img-responsive carousel-image center-block #{asset.image_type.downcase}", data: {asset_id: "#{asset.id}"}}
+.col-xs-6
+  %div{id: "artiste_photos_carousel_#{artiste.id}_right", class: 'carousel carousel-right', data: {artiste_id: artiste.id}}
+    - artiste_assets.each do |asset|
+      - selected_class = (selected_asset_right_id == asset.id) ? 'item active' : 'item'
+      %div{class: selected_class}
+        .selected-indicator
+          Selected
+        = image_tag asset.attachment.url(:large), {id: "image-right-#{asset.id}", class: "img-responsive carousel-image center-block #{asset.image_type.downcase}", data: {asset_id: "#{asset.id}"}}

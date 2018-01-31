@@ -1,0 +1,47 @@
+= link_to 'Availability and questions', messages_v2_artistes_runner_path(runner), class: 'dropdown-item card-header-menu-option', target: '_blank'
+%a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}',
+                        'send_generic_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send email
+%a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}',
+                        'send_generic_sms_modal', 'generic_sms_form_artistes_to_send_sms')"} Send SMS
+- # Unless
+- unless runner.rejected? # Reject artiste unless is already rejected
+  %a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}','reject_artistes_modal', 'v2_artistes_rejection_rejected_artistes_ids','v2_artistes_rejection_state')"} Release artiste
+  %a.dropdown-item{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'The artiste #{h artiste.full_name} will be removed of this shortlist, the artiste will not receive any email', type: 'warning', showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addSingleArtisteToForm(#{runner.id}, 'delete_artists_from_shortlist_ids', 'delete_artiste_from_shortlist_form')});"} Remove artiste from shortlist
+  - # Set character before AD pick it
+  - unless state == "waiting_shooting_acknowledgment" || state == "confirmed"
+    %a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', '#{runner.id}', '#{h artiste.full_name}', 'change_scenic_artistes_attributes_modal', 'runners_to_update')"} Update character and costume
+  - unless state == "draft" || state == "collision_detected" || state == "expecting_availability_confirmation" # Show additional availability email option
+    - # Show the Sweet alert
+    %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'This will create another runner entrance for the additional dates', type: 'warning', showCancelButton: true, confirmButtonColor: '#61B86D', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')}); "} Send additional availability email
+
+- # State dependant
+- case state
+- when "draft"
+  - # When the runner is in draft you can send the dates to check availability
+  %a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}',
+                        'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email','v2_send_email_shortlist_form_state')"} Send availability email
+- when "expecting_availability_confirmation"
+  - # And when is expecting availabilty you can add some dates to the one already asked, this will be confirmed (alert)
+  %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'The selected dates will be added to the ones already asked and the flexible dates allowed will be overwritten', type: 'info', showCancelButton: true, confirmButtonColor: '#61B86D', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')}); "} Send additional availability email
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.addSingleArtisteToForm(#{runner.id}, 'skip_availability_ids', 'skip_availability_form')"} Skip availability
+
+- when "collision_detected"
+- when "draft_selected"
+  %a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{h artiste.full_name}',
+                        'confirm_artiste_as_selected_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send confirmation to artiste
+  = link_to 'Go to the Book', v2_book_path(@shortlist.primary_book), class: 'dropdown-item card-header-menu-option', target: '_blank'
+- when "draft_not_selected"
+  -# %a.dropdown-item{:href => '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{artiste.full_name}',
+  -#                       'release_artiste_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Release Artiste
+  = link_to 'Go to the Book', v2_book_path(@shortlist.primary_book), class: 'dropdown-item card-header-menu-option', target: '_blank'
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.addSingleArtisteToForm(#{runner.id}, 'skip_draft_no_selected_ids', 'skip_draft_no_selected_form')"} Send to penciled
+
+- when "waiting_shooting_acknowledgment"
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.addSingleArtisteToForm(#{runner.id}, 'skip_acknowledgment_ids', 'skip_acknowledgment_form')"} Skip acknowledgment
+- when "confirmed"
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}',#{runner.id},'#{h artiste.full_name}','send_details_to_artistes_modal','v2_send_email_shortlist_form_artistes_to_send_email')" } Send details to artiste
+- when "details_received"
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}','#{runner.id}','#{h artiste.full_name}','process_runners_modal', 'runners_ids')"} Add artiste to production calendar
+- when "unavailable", "rejected_by_booker_action", "not_selected", "not_acknowledged_shooting"
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "swal({title: 'Are you sure?', type: 'warning', showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addSingleArtisteToForm(#{runner.id}, 'drop_runners_ids', 'drop_runners_form')});"} Remove artiste
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.addSingleArtisteToForm(#{runner.id}, 'return_to_draft_runners_ids', 'return_all_artistes_to_draft')"} Return artiste to draft

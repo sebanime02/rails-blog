@@ -1,0 +1,51 @@
+.modal.fade.bs-example-modal-lg#shortlist_books_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+          %h2.modal-title Books
+          %hr
+        .modal-body
+          .row
+            .col-xs-12
+              %h4 Create book
+              %p Select the states of the artistes you wish to appear in the new book
+          = simple_form_for :new_book, url: create_book_v2_shortlist_path(@shortlist), method: :post do |f|
+            - # I had to made a duplication because other way when adding the 'all' option messes with the class constant
+            - states = Runner.active_states.dup
+            - states.unshift('all')
+            - states.in_groups_of(4).each do |group|
+              .row
+                - group.each do |state|
+                  .col-xs-3
+                    - unless state.nil?
+                      = f.input state, as: :boolean, label: "#{t(state)}", boolean_style: :inline
+            .row
+              .pull-right
+                = f.button :submit, 'Create', class: 'btn btn-primary btn-raised'
+          %hr
+          .row
+            .col-xs-12
+              %h4 Existing Books
+              %p Books already created
+              %table.table.table-bordered.table-hover.table-responsive.table-condensed#books_table
+                %thead
+                  %th.name-column Book
+                  %th.states-column Included states
+                  %th.sharing-column Sharing enabled
+                  %th.expire-column Public access expires at
+                  %th.delete-column Delete
+                %tbody
+                  - @shortlist.books.each do |book|
+                    %tr{id: "book_row_#{book.id}"}
+                      - book_name = (book.primary?) ? "Primary book" : "Book-#{book.created_at.strftime('%d-%b')}"
+                      %td= link_to book_name, v2_book_path(book), target: "_blank"
+                      %td= (book.included_states == Runner.active_states) ? "All" : book.included_states.map{|state| t(state)}.join('<br />').html_safe
+                      %td= (book.sharing_enabled?) ? 'Yes' : 'No'
+                      %td= (book.token_expires?) ? "#{book.token_expires_at.strftime('%d - %b/%Y')}" : "Don't expire"
+                      %td.text-center
+                        - unless book.primary?
+                          = link_to v2_book_path(book), method: :delete, confirm: "Are you sure?" do
+                            %i.fa.fa-times

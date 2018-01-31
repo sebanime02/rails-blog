@@ -1,0 +1,66 @@
+.modal.fade.bs-example-modal-lg#shortlist_settings_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+          %h2.modal-title Shortlist settings
+        .modal-body
+          .row
+            .col-xs-12
+              %h6
+                %b Shortlist:
+                %em= @shortlist.name
+              %h6
+                %b Owner:
+                %em= @shortlist.booker.try(:full_name)
+              - if @shortlist.production.present?
+                %h6
+                  %b Production:
+                  %em= @shortlist.production.title
+          %hr
+          .row
+            .col-xs-6.border-right
+              .row#edit_shortlist_container
+                .col-xs-12
+                  %h4 Edit shortlist
+                  #edit_shortlist_form_container
+                    = simple_form_for @shortlist, url: v2_shortlist_path(@shortlist), method: :put do |f|
+                      = f.input :name, placeholder: 'Shortlist name'
+                      - if current_user.role_at_least?(User::ROLE_ADMIN)  # Only for admins, allow to choose which booker will be assigned to this shortlist
+                        = f.input :booker_id, as: :select, placeholder: 'Booker', collection: User.bookers.active_users, label_method: :full_name, value_method: :id, include_blank: true
+                      - else
+                        = f.input :booker_id, as: :hidden, value: "#{@shortlist.booker_id}"
+                      = f.input :state, as: :select, collection: [['Active', 'active'], ['Archived', 'archived']], selected: "#{(@shortlist.active?) ? 'active' : 'archived'}", include_blank: false
+                      = f.input :description, as: :text, placeholder: 'Description of the people who fit in this shortlist', input_html: {rows: '3'}
+                      - if @shortlist.production.nil?
+                        = f.input :production_id, as: :select, placeholder: "Production name", collection: [], include_blank: false
+                      -# - else
+                      -#   = f.input :production_id, as: :select, placeholder: "#{@shortlist.production.title}", collection: [], selected: "#{@shortlist.production.title}", include_blank: false
+                      .pull-right
+                        = f.button :submit, 'Update', class: 'btn btn-primary btn-raised'
+            .col-xs-6
+              #shortlist_settings_container
+                .row
+                  .col-xs-12
+                    %h4 Shortlist actions
+                  .col-xs-12.text-align-center
+                    %a.width-100.btn.btn-raised.btn-primary{href: '#', onClick: "Z0Z0.v2.shortlists.addAllArtistesInShortlistToModal('#{@shortlist.id}',
+                      'send_generic_email_modal','v2_send_email_shortlist_form_for_all','shortlist_settings_modal')"} Send email to all artistes
+                  .col-xs-12.text-align-center
+                    = link_to "Export CSV of shortlist", export_shortlist_as_csv_v2_shortlist_path(@shortlist ,format: :csv), class: "btn btn-raised btn-primary width-100"
+                  - # We use forms for actions beacuase all of them are made through post
+                  .col-xs-6
+                    = simple_form_for @shortlist, url: duplicate_v2_shortlist_path(@shortlist), method: :post, html: {id: 'duplicate_shortlist_form'} do |f|
+                      %a.width-100.btn.btn-raised.btn-primary{href: '#', onclick: "$('#duplicate_shortlist_form').submit()"} Duplicate
+                  .col-xs-6
+                    - if @shortlist.active?
+                      = simple_form_for @shortlist, url: archive_v2_shortlist_path(@shortlist), method: :post, html: {id: 'archive_shortlist_form'} do |f|
+                        %a.width-100.btn.btn-raised.btn-primary{href: '#', onclick: "$('#archive_shortlist_form').submit()"} Archive
+                    - else
+                      = simple_form_for @shortlist, url: activate_v2_shortlist_path(@shortlist), method: :post, html: {id: 'activate_shortlist_form'} do |f|
+                        %a.width-100.btn.btn-raised.btn-primary{href: '#', onclick: "$('#activate_shortlist_form').submit()"} Activate
+          .row
+            .col-xs-12
+              %b Note: The duplicated shortlist name will be the same with "-duplicated" appended at the end

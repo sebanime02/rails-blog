@@ -1,0 +1,18 @@
+.modal.fade.bs-example-modal-lg#reject_artistes_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        = simple_form_for @artistes_rejection, url: reject_artistes_v2_shortlist_path, method: :post, validate: true, remote: true do |f|
+          .modal-header
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+            %h4.modal-title Release artistes
+          .modal-body
+            %label You're about to reject
+            %em.warning-messages
+            = f.input :rejected_artistes_ids, as: :hidden, input_html: {value: ''}
+            = f.input :state, as: :hidden
+            = f.input :reject_reason,  label: "Please, specify the reason why you're rejecting this(these) artiste(s) - this don't show to artist", input_html: {value: ''}, placeholder: 'Reject reason', required: true
+            = f.input :additional_message, label: "Please, if you have a message for artist, write it below", input_html: {value: '', placeholder: 'Additional message', required: false}
+          .modal-footer
+            = f.button :submit, 'Reject', class: 'btn btn-primary', data: { disable_with: 'Sending...' }

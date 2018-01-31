@@ -1,0 +1,18 @@
+.modal.fade.bs-example-modal-lg#add_to_shortlist_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        =simple_form_for :artiste, url: add_artistes_from_shortlist_v2_shortlists_path, method: :post do |f|
+          .modal-header
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+            %h2.modal-title Add artistes to shortlist
+          .modal-body
+            .row
+              .col-xs-4
+                %p Search artiste by name or email:
+              .col-xs-8
+                = f.input :artiste_ids, placeholder: "Full name or Email",label: false, include_blank: true, input_html: {id: 'add_artiste_to_shortlist_input'}
+            = f.input :shortlist_id, as: :hidden, input_html: {value: "#{@shortlist.id}"}
+          .modal-footer
+            = f.button :submit, 'Add', class: 'btn btn-primary'

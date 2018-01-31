@@ -1,0 +1,43 @@
+<% if @carousel_selection == "twin" %>
+  $('#update_shortlist_form #options_twin_selection').val('1');    // Twin selection active
+  <% @artistes.each do |artiste| %>
+    $("#carousel_container_<%= artiste.id%>").html("<%= j render partial: 'twin_artiste_photos_carousel', locals: {shortlist: @shortlist, artiste: artiste}%>");
+  <% end %>
+  $('.carousel').owlCarousel({
+        navigation: true,
+        singleItem: true
+  });
+  dictionary = gon.twin_selected_assets
+  $.each(dictionary, function(artiste_id){
+    left_owl = $('#artiste_photos_carousel_'+artiste_id+'_left').data('owlCarousel');
+    right_owl = $('#artiste_photos_carousel_'+artiste_id+'_right').data('owlCarousel');
+    left_asset_ids = $.map(left_owl.$owlItems, function(asset){
+      return $(asset).find('img').data('asset-id');
+    });
+    right_asset_ids = $.map(right_owl.$owlItems, function(asset){
+      return $(asset).find('img').data('asset-id');
+    });
+    left_index_in_the_carousel = left_asset_ids.indexOf(dictionary[artiste_id]['left']);
+    right_index_in_the_carousel = right_asset_ids.indexOf(dictionary[artiste_id]['right']);
+    left_owl.goTo(left_index_in_the_carousel);
+    right_owl.goTo(right_index_in_the_carousel);
+  });
+<% else # Single carousel %>
+  $('#update_shortlist_form #options_twin_selection').val('0');    // Single carousel
+  <% @artistes.each do |artiste| %>
+    $("#carousel_container_<%= artiste.id%>").html("<%= j render partial: 'artiste_photos_carousel', locals: {shortlist: @shortlist, artiste: artiste}%>");
+  <% end %>
+  $('.carousel').owlCarousel({
+        navigation: true,
+        singleItem: true
+  });
+  dictionary = gon.selected_assets;
+  $.each(dictionary, function(artiste_id){
+    owl = $('#artiste_photos_carousel_'+artiste_id).data('owlCarousel');
+    asset_ids = $.map(owl.$owlItems, function(asset){
+      return $(asset).find('img').data('asset-id');
+    });
+    index_in_the_carousel = _asset_ids.indexOf(dictionary[artiste_id]);
+    owl.goTo(right_index_in_the_carousel);
+  });
+<% end %>

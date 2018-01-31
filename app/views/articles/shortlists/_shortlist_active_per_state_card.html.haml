@@ -1,0 +1,24 @@
+- runners = @shortlist.runners.includes(:costume ,user: [:assets, :runners => {:user => :assets}]).where(state: state).sort{|runner_a, runner_b| runner_a.user.name <=> runner_b.user.name}
+.card.section{id: "#{state}_card"}
+  .card-header-condense.navbar-sticky-top{id: "#{state}_header_card"}
+    .row
+      .col-xs-1.text-align-center
+        %input{id: "#{state}_general_check", type: "checkbox", onClick: "Z0Z0.v2.shortlists.selectAllArtistsInState('#{state}')"}
+      .col-xs-8
+        %label{data: {toggle: 'tooltip', placement: 'top', original_title: state_tooltip_text(state)}}= "#{t(state)}"
+        %label{id: "#{state}_count_artists"}= "(#{@runners_per_state_count[state]})"
+      .col-xs-1.text-align-center
+        .dropdown
+          %i.material-icons{type: "button", onClick: "Z0Z0.v2.shortlists.setStateToModal('#{state}', '#{t(state).downcase}', 'filters_for_state_modal')"} filter_list
+      .col-xs-1.text-align-center
+        .dropdown
+          %i.material-icons.dropdown-toggle.shortlist-dropdown{id: "group_options_for_state_#{state}_icon", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"} more_horiz
+          .dropdown-menu.dropdown-menu-left{"aria-labelledby" => "group_options_for_state_#{state}_icon"}
+            = render partial: 'dropdown_group_options_for_state', locals: {state: state}
+      .col-xs-1.text-align-center
+        %i.material-icons.collapse-icon{data: {toggle: 'collapse', target: "##{state}_container"}}keyboard_arrow_up
+  .card-body
+    %div.collapse.in{id: "#{state}_container"}
+      - runners.each do |runner|
+        %div{id: "runner_#{runner.id}_wraper"}
+          = render partial: 'v2/shortlists/runner_information_row', locals: {runner: runner, state: state}

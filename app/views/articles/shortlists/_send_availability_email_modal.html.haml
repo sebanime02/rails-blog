@@ -1,0 +1,72 @@
+.modal.fade.bs-example-modal-lg#send_availability_email_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .div
+        = simple_form_for @artiste_availability_check, as: :v2_send_email_shortlist_form, url: send_artiste_availability_check_v2_shortlist_path, method: :post, html: { novalidate: false }, validate: true, remote: true do |f|
+          .modal-header.custome-modal-header
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+            %h4.modal-title Send availability email to Artistes
+          .modal-body
+            .row.margin-top-15
+              .col-xs-12
+                %label Send an email requesting by availability on shortlist dates.
+            .row
+              .col-xs-12
+                %label Sending to:
+                %em.warning-messages
+            - # The availability questions can not be added nor edited. They are defined when the shortlist is created.
+            .custome-border-container
+              %h5
+                %span Availability dates
+              .row#availability_questions
+                .col-xs-12
+                  -#The next conmmented lines was commented for hide the time ranges, that because the booker no want see it.
+                  -# = f.input :asked_dates_list, input_html: {class: 'datepicker multiple-date-datepicker', autocomplete: "off", onChange: "Z0Z0.v2.shortlists.createTimeRangeForms()"}, required: true
+                  = f.input :asked_dates_list, label: false, input_html: {class: 'datepicker multiple-date-datepicker', autocomplete: "off"}, required: true, placeholder: "Click here to add dates"
+                  -# %h5 Time ranges
+                  -# .time-ranges-container
+                  -#   #availability_time_ranges.hidden-container
+                  -#     = f.simple_fields_for :asked_time_ranges do |time_range|
+                  -#       = render partial: 'asked_time_range_fields', locals: {f: time_range}
+                    -# The container to display time ranges for each selected date
+                    #individual_time_ranges
+                  #availability_checkboxes_container.form-inline
+                    -# = f.input :flexible_dates_allowed, as: :material_checkbox, label: false, inner_label: " Flexible dates allowed"
+                    .custome-radio-buttons
+                      = f.collection_radio_buttons :flexible_dates_allowed, [["1", 'Flexible dates allowed'] ,["0", 'Flexible dates NOT allowed']], :first, :last, required: true
+                    %br
+                    = f.input :expiration_date_present,as: :material_checkbox, label: false, inner_label: " Expiration date present", input_html: {checked: false, onChange: "Z0Z0.v2.shortlists.toggleAvailabilityExpirationDateSelection(event)"}
+                    -# &nbsp &nbsp
+                    -# = f.input :use_same_time_range, as: :boolean, boolean_style: :inline,  inline_label: 'Use same time ranges for all date', checked_value: false, input_html: {onChange: "Z0Z0.v2.shortlists.toggleIndividualTimeRanges(event)"}
+                  #availability_expiration_container.form-inline.expiration-container
+                    %em Please select the date and time of expiration for the availability questions (Not required)
+                    %br
+                    = f.input :expiration_date, placeholder: 'Expiration date', required: false, label: false, input_html: {class: 'datepicker single-date-datepicker', autocomplete: 'off'}, wrapper_html: {class: 'datepicker-inline-wrapper'}
+                    = f.input :expiration_time, as: :select, placeholder: 'Expiration time', collection: (1..24).map{|n| (n > 12) ? ["#{n-12}:00PM", n] : ["#{n}:00AM", n]}, include_blank: false, label: false
+              .row
+                .col-xs-12
+                  %b Note: If the "flexible dates NOT allowed" is selected, the artistes must confirm as available all dates
+            - # Generic questions can be added or removed.
+            .custome-border-container
+              %h5
+                %span Questions
+              .row.col-xs-12
+                %em You can add some questions to the artiste(s) - e.g. Do you have pets?
+              .row#questions
+                .col-xs-12
+                  = f.simple_fields_for :questions do |question|
+                    = render partial: 'question_fields', locals: {f: question}
+                .col-xs-12
+                  .links
+                    = link_to_add_association 'Add Question', f, :questions, force_non_association_create: true, class: 'btn btn-primary btn-sm'
+            .custome-border-container
+              %h5
+                %span Customize email
+              = f.input :email_code, as: :hidden
+              = f.input :artistes_to_send_email, as: :hidden, input_html: {value: ''}
+              = f.input :state, as: :hidden, html: {id: "v2_modal_state"}
+              = f.input :subject, label: "Note: The default subject is 2020 Casting - Job availability check ", input_html: {value: ''}, placeholder: 'Subject'
+              = f.input :additional_message, as: :text, placeholder: "Additional message.", input_html: {value: '', rows: "10"}, label: false
+          .modal-footer
+            = f.button :submit, 'Send email', class: 'btn btn-primary', data: { disable_with: 'Sending...' }

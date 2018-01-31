@@ -1,0 +1,27 @@
+=simple_form_for :change_available_dates, url: change_available_dates_of_runner_v2_shortlist_path, method: :post, remote: true do |f|
+  = f.simple_fields_for :runner_info do |r|
+    = r.input :runner_id, as: :hidden, input_html: { value: "#{@runner_id}" }
+  = f.simple_fields_for :available_dates do |d|
+    - if @availability_dates.any?
+      - @availability_dates.each do |availability_date|
+        .row
+          .col-xs-2
+          .col-xs-4
+            - case availability_date.status
+              - when "asked"
+                %label= "#{availability_date.value.strftime('%d %b/%Y')}"
+              - when "available"
+                %label{class: "text-success"}= "#{availability_date.value.strftime('%d %b/%Y')}"
+              - when "unavailable"
+                %label{class: "text-unavailable"}= "#{availability_date.value.strftime('%d %b/%Y')}"
+          .col-xs-4
+            - case availability_date.status
+              - when "asked"
+                = d.input availability_date.value, as: :select, collection:[:available, :unavailable, :asked], include_blank: false, label: false, selected: :asked
+              - when "available"
+                = d.input availability_date.value, as: :select, collection:[:available, :unavailable], include_blank: false, label: false, selected: :available
+              - when "unavailable"
+                = d.input availability_date.value, as: :select, collection:[:available, :unavailable], include_blank: false, label: false, selected: :unavailable
+
+  .modal-footer
+    = f.button :submit, 'Save', class: 'btn btn-primary', data: { disable_with: 'Sending...' }

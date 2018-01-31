@@ -1,0 +1,84 @@
+- # Options for every state. Send an email to all, and to checked
+-# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}',
+-#                   'send_generic_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send Email to All Artistes in State
+%a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}',
+                  'send_generic_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send email to selected artistes
+%a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}',
+                  'send_generic_sms_modal', 'generic_sms_form_artistes_to_send_sms')"} Send SMS to selected artistes
+
+- # Unless
+- unless state == "rejected"
+  -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}',
+  -#                 'reject_artistes_modal', 'shortlist_rejected_artistes_ids')"} Reject all Artistes
+  = simple_form_for :delete_artists_from_shortlist, url: delete_artiste_v2_shortlist_path(@shortlist), method: :post, html: {id: 'delete_artiste_from_shortlist_form'}, remote: true do |f|
+    = f.input :ids, as: :hidden
+    =link_to 'Remove selected artistes from this shortlist', '#', class: 'dropdown-item card-header-menu-option', onClick: "swal({title: 'Are you sure?', text: 'Some artists will be deleted from this shortlist, the artistes will not receive any email', type: 'warning', showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addCheckedArtistesToForm('#{state}', 'delete_artists_from_shortlist_ids',
+    'delete_artiste_from_shortlist_form')});"
+  %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}',
+                  'reject_artistes_modal', 'v2_artistes_rejection_rejected_artistes_ids','v2_artistes_rejection_state')"} Release selected artistes
+  - # Set character before AD pick it
+  - unless state == "waiting_shooting_acknowledgment" || state == "confirmed"
+    %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}', 'change_scenic_artistes_attributes_modal', 'runners_to_update')"} Update character and costume for selected artistes
+  - # Send additional availability confirmation for all states except draft, expecting_availability_confirmation and collision_detected
+  - unless state == "draft" || state == "collision_detected" || state == "expecting_availability_confirmation"
+    - # On click displays a Sweet Alert before actually display the modal
+    -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'This will create another runner entrance for the additional dates', type: 'warning', showCancelButton: true, confirmButtonColor: '#61B86D', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')}); "} Send Additional Availability Email to All
+    %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'This will create another runner entrance for the additional dates', type: 'warning', showCancelButton: true, confirmButtonColor: '#61B86D', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')});"} Send additional availability email to selected artistes
+
+- # State dependent
+- case state
+- when "draft"
+  - # When the runner is in draft you can send the dates to check availability
+  -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}',
+  -#                   'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send Availability Email to All
+  %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}',
+                    'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send availability email to selected artistes
+
+- when "expecting_availability_confirmation"
+  - # And when is expecting availabilty you can add some dates to the one already asked, this will be confirmed (alert)
+  -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'The selected dates will be added to the ones already asked and the flexible dates allowed will be overwritten', type: 'info', showCancelButton: true, confirmButtonColor: '#61B86D', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')}); "} Send Additional Availability Email to All
+  %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "swal({title: 'Are you sure?', text: 'The selected dates will be added to the ones already asked and the flexible dates allowed will be overwritten', type: 'info', showCancelButton: true, confirmButtonColor: '#61B86D', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')});"} Send additional availability email to selected artistes
+  = simple_form_for :skip_availability, url: skip_availability_v2_shortlist_path(@shortlist), method: :post, html: {id: 'skip_availability_form'}, remote: true do |f|
+    = f.input :ids, as: :hidden
+    -# = link_to 'Skip Availability For All Runners','#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addAllArtistesToForm('#{state}', 'skip_availability_ids', 'skip_availability_form')"
+    = link_to 'Skip availability for selected artistes','#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addCheckedArtistesToForm('#{state}', 'skip_availability_ids', 'skip_availability_form')"
+
+- when "collision_detected"
+- when "draft_selected"
+
+  -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}',
+  -#                   'confirm_artiste_as_selected_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Confirm all Artistes as Selected
+  %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}',
+                    'confirm_artiste_as_selected_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send confirmation to selected artistes
+  = link_to 'Go to the Book', v2_book_path(@shortlist.primary_book), class: 'dropdown-item card-header-menu-option', target: '_blank'
+- when "draft_not_selected"
+  -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addAllArtistesInAStateToModal('#{state}',
+  -#                   'release_artiste_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Release all Artistes
+  -# %a.dropdown-item.card-header-menu-option{:href => '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}',
+  -#                   'release_artiste_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Release Checked Artistes
+  = link_to 'Go to the Book', v2_book_path(@shortlist.primary_book), class: 'dropdown-item card-header-menu-option', target: '_blank'
+  = simple_form_for :skip_draft_no_selected, url: skip_draft_no_selected_v2_shortlist_path(@shortlist), method: :post, html: {id: 'skip_draft_no_selected_form'}, remote: true do |f|
+    = f.input :ids, as: :hidden
+    -# = link_to 'Send to draft selected all Runners', '#', class: 'dropdown-item card-header-menu-option',onclick: "Z0Z0.v2.shortlists.addAllArtistesToForm('#{state}', 'skip_draft_no_selected_ids', 'skip_draft_no_selected_form')"
+    = link_to 'Send selected artistes to penciled', '#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addCheckedArtistesToForm('#{state}', 'skip_draft_no_selected_ids', 'skip_draft_no_selected_form')"
+
+- when "waiting_shooting_acknowledgment"
+
+  = simple_form_for :skip_acknowledgment, url: skip_acknowledgment_v2_shortlist_path(@shortlist), method: :post, html: {id: 'skip_acknowledgment_form'}, remote: true do |f|
+    = f.input :ids, as: :hidden
+    -# = link_to 'Skip Acknowledgment For All Runners','#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addAllArtistesToForm('#{state}', 'skip_acknowledgment_ids', 'skip_acknowledgment_form')"
+    = link_to 'Skip acknowledgment for selected artistes','#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addCheckedArtistesToForm('#{state}', 'skip_acknowledgment_ids', 'skip_acknowledgment_form')"
+- when "confirmed"
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}', 'send_details_to_artistes_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')"} Send details to selected artistes
+- when "details_received"
+  %a.dropdown-item.card-header-menu-option{href: '#', onClick: "Z0Z0.v2.shortlists.addCheckedArtistesInAStateToModal('#{state}', 'process_runners_modal', 'runners_ids')"} Add selected artistes to production calendar
+- when "rejected"
+  = simple_form_for :drop_runners, url: drop_runners_v2_shortlist_path(@shortlist), method: :post, html: {id: 'drop_runners_form'} do |f|
+    = f.input :ids, as: :hidden
+    - #swal({title: 'Are you sure?', type: 'warning', showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){});
+    -# = link_to 'Remove all artistes','#', class: 'dropdown-item card-header-menu-option', onclick: "swal({title: 'Are you sure?', type: 'warning', showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addAllArtistesToForm('rejected', 'drop_runners_ids', 'drop_runners_form')});"
+    = link_to 'Remove selected artistes', '#', class: 'dropdown-item card-header-menu-option', onclick: "swal({title: 'Are you sure?', type: 'warning', showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes', closeOnConfirm: true }, function(){Z0Z0.v2.shortlists.addCheckedArtistesToForm('rejected', 'drop_runners_ids', 'drop_runners_form')});"
+  = simple_form_for :return_to_draft_runners, url: return_artistes_to_draft_v2_shortlist_path(@shortlist), method: :post, html: {id: 'return_all_artistes_to_draft'}, remote: true do |f|
+    = f.input :ids, as: :hidden
+    -# = link_to 'Return all artistes to selection','#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addAllArtistesToForm('rejected', 'return_to_draft_runners_ids', 'return_all_artistes_to_draft')"
+    = link_to 'Return selected artistes to selection', '#', class: 'dropdown-item card-header-menu-option', onclick: "Z0Z0.v2.shortlists.addCheckedArtistesToForm('rejected', 'return_to_draft_runners_ids', 'return_all_artistes_to_draft')"

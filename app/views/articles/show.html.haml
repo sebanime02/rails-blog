@@ -1,0 +1,17 @@
+
+- render 'header'
+
+%p
+  %strong Title:
+  = @article.title
+%p
+  %strong Text:
+  = @article.text
+
+%table
+  %tr
+    %th Name
+    %th Comment
+    %th Destroy
+  = render @article.comments
+= render 'comments/form'

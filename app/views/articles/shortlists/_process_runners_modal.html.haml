@@ -1,0 +1,27 @@
+.modal.fade.bs-example-modal-lg#process_runners_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        - production = @shortlist.production
+        = simple_form_for :process_runners, url: process_runners_v2_shortlist_path(@shortlist), method: :post, html: {id: 'process_runners_form'}, remote: true do |f|
+          .modal-header
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+            %h4.modal-title Add confirmed artistes to Production Calendar
+            %em= "Production: #{production.try(:title)}"
+            .row
+              .col-xs-12
+                %label Sending to:
+                %em.warning-messages
+          .modal-body
+            %hr
+            %b Note: This will create a confirmed artiste in production calendar, and remove the artiste from the shortlist
+            = f.input :stage, as: :select, collection: UserProductionStage.all, label_method: :description, value_method: :id, include_blank: false, label_html: {data: {toggle: 'tooltip', placement: 'bottom', original_title: stages_tooltip_text }}
+            %hr
+            = f.input :runners_ids, as: :hidden, input_html: {id: 'runners_ids'}
+          .modal-footer
+            = f.button :submit, 'Confirm', class: 'btn btn-primary', disabled: production.nil?, data: { disable_with: 'Sending...' }
+            - if production.nil?
+              .row
+                .col-xs-12
+                  %b You must select a production before. Click on the gear button

@@ -1,0 +1,45 @@
+.modal.fade#filters_for_state_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+          %h3#title_filters_modal Filters for state
+        .modal-body
+          .row
+            %div#gender_container.col-xs-5.border-right
+              %em Gender:
+              %form.row
+                .col-xs-6#shrotlist_quick_selection_M
+                  %input{ type: "checkbox", type_filter: "gender"} &nbsp Men
+                .col-xs-6#shrotlist_quick_selection_F
+                  %input{ type: "checkbox", type_filter: "gender"} &nbsp Women
+            %div.col-xs-1
+            %div#transport_method_container.col-xs-6
+              %em Transport method:
+              %form.row
+                .col-xs-4#shrotlist_quick_selection_Car
+                  %input{ type: "checkbox", type_filter: "transport"} &nbsp Car
+                .col-xs-4#shrotlist_quick_selection_Private
+                  %input{ type: "checkbox", type_filter: "transport"} &nbsp Private
+                .col-xs-4#shrotlist_quick_selection_Public
+                  %input{ type: "checkbox", type_filter: "transport"} &nbsp Public
+          %div.samll-margin-top
+            #character_container.desable_form
+              =simple_form_for :filter_character do |f|
+                - characters = @shortlist.runners.pluck(:character).uniq
+                =f.input :character, as: :select, collection: characters, label: false, include_blank: false, type_filter: "character", placeholder: "Character"
+            #costume_container.desable_form
+              =simple_form_for :filter_costume do |f|
+                - costumes = @shortlist.runners.map{|runner| runner.costume.description unless runner.costume.nil?}.uniq
+                = f.input :costume, as: :select,collection: costumes, label: false, include_blank: false, type_filter: "costume", placeholder: "Costume"
+            #available_dates_container.disable_form
+              =simple_form_for :available_dates do |f|
+                - dates = @shortlist.runners.map { |runner| runner.asked_dates }.flatten.uniq
+                %b Available on: &nbsp &nbsp
+                - dates.each do |date|
+                  %input{type: "checkbox", type_filter: "dates", value: "#{date.strftime('%d %b/%Y')}" } &nbsp #{date.strftime('%d %b/%Y')}
+                  &nbsp &nbsp
+        .modal-footer
+          %button.btn.btn-primary{onClick: "Z0Z0.v2.shortlists_filters.applyFilter('filters_for_state_modal')"} Apply

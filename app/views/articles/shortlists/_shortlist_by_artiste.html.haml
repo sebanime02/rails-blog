@@ -1,0 +1,14 @@
+- artistes = @shortlist.artistes.includes(:assets, :runners).sort{|a,b| a.name <=> b.name}
+%table.table.table-hover.table-bordered.table-condensed.artiste-table{id: "shortlist_by_artiste_table"}
+  %thead
+    %th.name-column{onClick: "Z0Z0.v2.shortlists.toggleTreetable(event)"}
+      %i.fa.fa-angle-right.treetable-collapse-icon
+      Name
+    %th.dates-column First interacted
+    %th.state-column State
+    %th.dates-column Dates
+    %th.character-column Character - Costume
+    %th.actions-column Actions
+  %tbody
+  - artistes.each do |artiste|
+    = render partial: 'shortlist_by_artiste_artiste_row', locals: {artiste: artiste}

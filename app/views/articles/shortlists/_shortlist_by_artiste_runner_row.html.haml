@@ -1,0 +1,30 @@
+- cache [@shortlist.id, :by_artiste, runner] do
+  %tr.runner-row{"data-tt-id" => "runner_#{runner.id}", "data-tt-parent-id" => "artiste_#{artiste.id}", id: "runner_row_#{runner.id}", data: {artiste_id: "#{artiste.id}", runner_id: "#{runner.id}"}}
+    %td.name-column
+    - # Interaction date column
+    %td.dates-column.vcenter= "#{runner.created_at.strftime('%d %b/%Y')}"
+    %td.state-column.vcenter
+      %label{class: "#{'text-danger' if runner.rejected?} #{'text-success' if runner.state == 'confirmed'}"}= "#{t(runner.state)}"
+    - # Availability dates column
+    %td.dates-column
+      - if runner.asked_dates.empty?
+        %em.text-muted Not dates yet
+      - elsif runner.available_dates.any?
+        - runner.asked_dates.each do |date|
+          %label{class: "#{(runner.available_dates.include? date) ? 'text-success' : 'text-unavailable'}"}= "#{date.strftime('%d %b/%Y')}"
+          %br
+      - else
+        - runner.asked_dates.each do |date|
+          %label.asked-date= "#{date.strftime('%d %b/%Y')}"
+          %br
+    %td.character-column.vcenter
+      - if runner.character.blank?
+        %em.text-muted None
+      - else
+        %label= "Character: #{runner.character}"
+        %br
+      - unless runner.costume.nil?
+        %label= "Costume: #{runner.costume.description}"
+    %td.actions-column.vcenter
+      .pull-right.artiste-icons
+        = render partial: 'shortlist_by_artiste_runner_actions', locals: {runner: runner, artiste: artiste, state: runner.state}

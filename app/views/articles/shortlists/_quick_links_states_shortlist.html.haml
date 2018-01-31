@@ -1,0 +1,27 @@
+.container#quick_links
+  .card
+    .card-header-condense
+      %p.text-center Quick links
+    .card-body.background-white
+      %div
+        %ul#options_quick_links.nav.nav-pills
+          - @possible_active_runner_states.each do |state|
+            %li
+              %a.list-group-item.list-group-item-condense{"href"=>"##{state}_card", data:{state: "#{state}" }} #{t(state)} (#{@runners_per_state_count[state]})
+          .dropdown
+            %li#options_rejected.dropdown-toggle{"data-toggle"=>"dropdown", "aria-haspopup"=>"true",  "aria-expanded"=>"true"}
+              %a.list-group-item.list-group-item-condense Rejected (#{@runners_per_state_count["rejected"]})
+            %ul.dropdown-menu{"aria-labelledby"=>"options_rejected"}
+              - @possible_rejected_runner_states.each do |state|
+                %li
+                  %a.list-group-item.list-group-item-condense{"href"=>"##{state}_container"} #{state.humanize} (#{@runners_per_state_count[state]})
+      %hr.hr_without_margin
+      .container
+        %p.text-center.no_margins.card-subtitle Search by name
+        .desable_form
+          =simple_form_for :filter_name do |f|
+            - names = @shortlist.runners.joins(:user).map{|runner| runner.user.full_name}.uniq
+            =f.input :name, as: :select, collection: names, label: false, include_blank: true, placeholder: "Full name"
+      %hr.hr_without_margin
+      .container
+        %button.btn.btn-primary{"data-toggle" => "modal", "data-target" => "#add_to_shortlist_modal"  } Add to shortlist

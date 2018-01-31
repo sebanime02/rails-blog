@@ -1,0 +1,47 @@
+%div{"data-spy"=>"scroll", "data-target"=>"#myScrollspy"}
+  #shortlist_information.page-title
+    %h2
+      Shortlist: #{@shortlist.name}
+      - if @shortlist.archived?
+        %em (Archived)
+    %h4
+      Production:
+      - if @shortlist.production.present?
+        = link_to "#{@shortlist.production.title}", production_path(@shortlist.production)
+      - else
+        %em None
+    %div
+      %label Total number of artistes in this shortlist: #{@shortlist.count_artistes}
+    / Nav tabs
+    .row
+      .col-xs-12
+        %ul.nav.nav-pills
+          %li.nav-item
+            %a.nav-link.active{"data-toggle" => "pill", :href => "#shortlist_by_state", :role => "tab"} States
+          %li.nav-item
+            %a.nav-link{"data-toggle" => "pill", :href => "#shortlist_by_artiste", :role => "tab"} Artistes
+
+    / Tab panes
+    .row
+      .col-xs-12.tab-content
+        / States tab
+        #shortlist_by_state.tab-pane.fade.in.active.row{:role => "tabpanel"}
+          .col-lg-3.col-md-4.hidden-xs.hidden-sm#quick_links_shortlist
+            =render 'quick_links_states_shortlist'
+          .col-lg-9.col-md-8.col-sm-12.col-xs-12
+            - @possible_active_runner_states.each do |state|
+              %div{ id: "#{state}_card_wrapper" }
+                = render partial: 'v2/shortlists/shortlist_active_per_state_card', locals: {state: state}
+            %div{ id: "rejected_states_card_wraper" }
+              = render partial: 'shortlist_rejected_states_card'
+        / Artistes tab
+        #shortlist_by_artiste.tab-pane.fade{:role => "tabpanel"}
+          = render partial: 'shortlist_by_artiste'
+
+- # Modals
+= render partial: 'shortlist_show_modals'
+
+#fab-btns
+  = render partial: 'shortlist_actions_fab'
+:javascript
+  Z0Z0.v2.shortlists.setup()

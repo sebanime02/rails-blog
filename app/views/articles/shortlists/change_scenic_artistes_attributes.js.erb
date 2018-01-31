@@ -1,0 +1,6 @@
+<% @runners.each do |runner| %>
+$("#runner_<%= runner.id %>_wraper").html("<%= j render partial: 'v2/shortlists/runner_information_row', locals: {runner: runner, state: @state}%>")
+<% end %>
+$("#change_scenic_artistes_attributes_modal").modal('hide');
+$("#notice_modal").find("#notice_message").html("<%= @notice_message %>");
+$("#notice_modal").modal("show");

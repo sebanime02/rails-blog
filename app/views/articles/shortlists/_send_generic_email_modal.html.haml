@@ -1,0 +1,36 @@
+.modal.fade.bs-example-modal-lg#send_generic_email_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        = simple_form_for @send_generic_email_form, url: send_generic_email_to_artistes_v2_shortlist_path(@shortlist), method: :post, remote: true do |f|
+          .modal-header
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+            %h3.modal-title Send email to Artistes
+          .modal-body
+            .row
+              .col-xs-12
+                %label Send an email with extra information or questions.
+            .row
+              .col-xs-12
+                %label Sending to:
+                %em.warning-messages
+            .row
+              .col-xs-12
+                %h4 Questions
+            .row#questions
+              .col-xs-12
+                = f.simple_fields_for :questions do |question|
+                  = render partial: 'question_fields', locals: {f: question}
+              .col-xs-12
+                .links
+                  = link_to_add_association 'Add Question', f, :questions, force_non_association_create: true, class: 'btn btn-primary btn-sm'
+            %br
+            = f.input :email_code, as: :hidden
+            = f.input :artistes_to_send_email, as: :hidden, input_html: {value: ''}
+            = f.input :state, as: :hidden
+            = f.input :for_all, as: :hidden, input_html: {value: 'false'}
+            = f.input :subject,  label: "Email subject. It defaults to 2020 Casting - Additional Information", input_html: {value: ''}, placeholder: 'Subject', required: true
+            = f.input :additional_message, as: :text, placeholder: "Additional message.", input_html: {value: '', rows: "10"}, label: 'Insert here some additional message to the template.'
+          .modal-footer
+            = f.button :submit, 'Send email', class: 'btn btn-primary', data: { disable_with: 'Sending...' } 

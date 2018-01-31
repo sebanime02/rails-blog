@@ -1,0 +1,63 @@
+- cache [@shortlist.id, :per_state_card, runner] do
+  - costume = runner.costume.description unless runner.costume.nil?
+  %div{class: 'runner-container', id: "runner-#{runner.id}", data: {runner_id: "#{runner.id}", artiste_id: "#{runner.user.id}", gender: "#{runner.user.gender}", transport: "#{runner.transport_method}", character: "#{runner.character}", costume: "#{costume}" }}
+    - artiste = runner.user
+    .row
+      .checkbox-container.col-xs-1
+        -# = simple_form_for :selected_runners, html: {id: "select_runner_form_#{artiste.id}", data: {runner_id: "#{runner.id}", artiste_id: "#{artiste.id}", artiste_name: "#{artiste.full_name}"}} do |f|
+        -#   = f.input_field :select, as: :boolean, input_html: {data: {artiste_id: artiste.id}, checked: false}, label: false, wrapper_html: {class: 'runner-row-checkbox'}
+        %input.runner-row-checkbox{class: "select-artists", id: "checkbox-runner-#{runner.id}", type: "checkbox", input_html: {data: {artiste_id: "#{artiste.id}", runner_id: "#{runner.id}", artiste_name: "#{artiste.full_name}", state: "#{state}"}, checked: false}}
+      .img-container-without-padding.col-xs-2.margin-row
+        - asset = artiste.assets.first.attachment.url(:medium) if artiste.assets.first
+        - # Display badge
+        - if runner.already_selected_by_ad?
+          %span.badge.ad-badge AD
+        - if runner.expired?
+          %span.badge.expired-badge EX
+        = image_tag asset, class: 'img img-circle runner-img img-responsive center-block'
+      .name-container.col-xs-8.margin-row
+        .row
+          .col-xs-12
+            // %label{class: "#{'runner-selected' if runner.already_selected_by_ad?}"}= link_to "#{artiste.full_name}", user_path(artiste), target: '_blank'
+            %b= link_to "#{artiste.full_name}", user_path(artiste), target: '_blank'
+        .row
+          .col-xs-12
+            - if runner.availability_dates.any?
+              - if runner.state == "draft"  || runner.state == "expecting_availability_confirmation"
+                %label Dates:
+              - else
+                %a{onClick: "Z0Z0.v2.shortlists.changeAvailableDatesForRunner(#{runner.id}, 'change_available_dates_modal')" } Dates:
+              -runner.availability_dates.each do |availability_date|
+                - case availability_date.status
+                  - when "asked"
+                    %label= "#{availability_date.value.strftime('%d %b/%Y')},"
+                  - when "available"
+                    %label{class: "text-success"}= "#{availability_date.value.strftime('%d %b/%Y')},"
+                  - when "unavailable"
+                    %label{class: "text-unavailable"}= "#{availability_date.value.strftime('%d %b/%Y')},"
+        .row
+          .col-xs-3
+            - unless runner.character.nil?
+              %i Character:
+              %label= " #{runner.character}"
+          .col-xs-6
+            - unless runner.costume.nil?
+              %i Costume:
+              %label= " #{runner.costume.description}"
+          .col-xs-3
+            - unless runner.transport_method.nil?
+              %i Transport:
+              %label= "#{runner.transport_method}"
+        - if state == 'rejected_by_booker_action'
+          .row
+            .col-xs-12
+              %b Rejected by:
+              %label= "#{runner.rejected_by.full_name}."
+              %b Reason:
+              %label= "#{runner.reject_reason}"
+      .options-container.pull-right.col-xs-1
+        .dropdown
+          %i.material-icons.dropdown-toggle.shortlist-dropdown{id: "single_options_runner_#{runner.id}_icon", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"} more_horiz
+          .dropdown-menu.dropdown-menu-left{"aria-labelledby" => "single_options_runner_#{artiste.id}_icon"}
+            = render partial: 'v2/shortlists/dropdown_single_options_for_state', locals: {state: state, artiste: artiste, runner: runner}
+  %hr.hr-condensed

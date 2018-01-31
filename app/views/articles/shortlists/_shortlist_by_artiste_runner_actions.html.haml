@@ -1,0 +1,18 @@
+- # Go to conversation
+%a{href: "#{messages_v2_artistes_runner_path(runner)}", target: "_blank", title: "Go to the conversation"}
+  %i.fa.fa-comments
+- # Generic email
+%a{href: '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{artiste.full_name}', 'send_generic_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')", title: "Send email"}
+  %i.fa.fa-envelope
+- # Send availability dates (only draft)
+- if state == 'draft'
+  %a{href: '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{artiste.full_name}', 'send_availability_email_modal', 'v2_send_email_shortlist_form_artistes_to_send_email')", title: "Send availability email"}
+    %i.fa.fa-calendar-check-o
+- # Go to the book
+- if state == 'draft_selected' || state == 'draft_not_selected'
+  %a{href: "#{v2_book_path(@shortlist.primary_book)}", target: '_blank', title: "Go to the book" }
+    %i.fa.fa-book
+- # Reject
+- unless runner.rejected?
+  %a{href: '#', onClick: "Z0Z0.v2.shortlists.singleAddArtisteToModal('#{state}', #{runner.id}, '#{artiste.full_name}', 'reject_artistes_modal', 'shortlist_rejected_artistes_ids')", title: "Reject runner"}
+    %i.fa.fa-ban

@@ -1,0 +1,22 @@
+.card{id: "rejected_card"}
+  .card-header-condense.navbar-sticky-top{id: "rejected_header_card"}
+    .row
+      .col-xs-1
+        %input{type: "checkbox", onClick: "Z0Z0.v2.shortlists.selectAllArtistsInState('rejected')"}
+      .col-xs-9
+        %label{data: {toggle: 'tooltip', placement: 'top', original_title: state_tooltip_text('rejected')}}= "#{t('rejected')} (#{@runners_per_state_count["rejected"]})"
+      .col-xs-2
+        .dropdown.pull-right
+          %i.material-icons.dropdown-toggle.shortlist-dropdown{id: "group_options_for_state_rejected_icon", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"} more_horiz
+          .dropdown-menu{"aria-labelledby" => "group_options_for_state_rejected_icon"}
+            = render partial: 'dropdown_group_options_for_state', locals: {state: 'rejected'}
+          %i.material-icons.collapse-icon{data: {toggle: 'collapse', target: "#rejected_container"}}keyboard_arrow_up
+  .card-body
+    #rejected_container.collapse.in
+      - @possible_rejected_runner_states.each do |state|
+        - runners = @shortlist.runners.includes(:rejected_by, :costume ,user: [:assets, :runners => {:user => :assets}]).where(state: state).sort{|runner_a, runner_b| runner_a.user.name <=> runner_b.user.name}
+        %hr
+        %div{id: "#{state}_container"}
+          %i= "#{state.titleize} (#{@runners_per_state_count[state]})"
+          - runners.each do |runner|
+            = render partial: 'runner_information_row', locals: {runner: runner, state: state}

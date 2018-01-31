@@ -1,0 +1,19 @@
+.modal.fade.bs-example-modal-lg#send_generic_sms_modal
+  .modal-dialog.modal-lg{role: "document"}
+    .modal-content
+      .container
+        = simple_form_for :generic_sms_form, url: send_generic_sms_to_artistes_v2_shortlist_path(@shortlist), method: :post, remote: true do |f|
+          .modal-header
+            %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+            %h3.modal-title Send SMS to Artistes
+          .modal-body
+            .row
+              .col-xs-12
+                %label Sending to:
+                %em.warning-messages
+            %br
+            = f.input :artistes_to_send_sms, as: :hidden, input_html: {value: ''}
+            = f.input :message, as: :text, placeholder: "Message.", input_html: {value: '', rows: "10"}, label: 'Insert here your message.'
+          .modal-footer
+            = f.button :submit, 'Send SMS', class: 'btn btn-primary', data: { disable_with: 'Sending...' }

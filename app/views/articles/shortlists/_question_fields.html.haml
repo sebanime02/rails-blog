@@ -1,0 +1,7 @@
+.row
+  .nested-fields
+    .col-xs-11
+      = f.input :question, placeholder: 'Insert the question here', label: false
+    .col-xs-1
+      = link_to_remove_association f, class: 'btn btn-primary btn-fab btn-fab-miniature' do
+        %i.material-icons.vertical-center remove

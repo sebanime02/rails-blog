@@ -1,0 +1,12 @@
+.row.time-range-row
+  .nested-fields
+    .col-xs-2
+      %b= f.object.id.capitalize
+    .col-xs-2
+      %label From:
+    .col-xs-3
+      = f.input :start_time, placeholder: 'Starting time', label: false, collection: (0..23).map{|n| (n > 12) ? ["#{n-12}:00PM", n] : ["#{n}:00AM", n]}, include_blank: false
+    .col-xs-2
+      %label To:
+    .col-xs-3
+      = f.input :end_time, placeholder: 'Ending time', label: false, collection: (0..23).map{|n| (n > 12) ? ["#{n-12}:00PM", n] : ["#{n}:00AM", n]}, include_blank: false, selected: 23

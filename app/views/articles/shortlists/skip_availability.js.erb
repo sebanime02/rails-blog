@@ -1,0 +1,12 @@
+<%# Render the involucred states %>
+<% @states_to_render_by_erb.each do |state| %>
+    $("#<%= state %>_card_wrapper").html("<%= j render partial: 'v2/shortlists/shortlist_active_per_state_card', locals: {state: state}%>");
+<% end %>
+<%# Show result modal %>
+$("#notice_modal").find("#notice_message").html("<%= @notice_message %>");
+$("#notice_modal").modal("show");
+<%# Show left quicklinks %>
+$("#quick_links_shortlist").html("<%= j render 'quick_links_states_shortlist'%>");
+Z0Z0.v2.shortlists_init_input.setup();
+Z0Z0.v2.shortlists.spyScrollForLeftMenu();
+Z0Z0.v2.shortlists.listenCheckArtistes();
