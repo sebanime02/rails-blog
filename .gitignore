@@ -23,4 +23,4 @@
 .byebug_history
 .DS_Store
 app/views/.DS_Store
-# .env
+.env

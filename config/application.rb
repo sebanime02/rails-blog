@@ -7,7 +7,11 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 # Instruction for loading Dotenv
-Dotenv::Railtie.load
+if ['development', 'test'].include? ENV['RAILS_ENV']
+  Dotenv::Railtie.load
+end
+s
+HOSTNAME = ENV['HOSTNAME']
 
 module Blog
   class Application < Rails::Application
