@@ -15,8 +15,8 @@
       %td
         =article.text
       %td
-        = link_to 'Edit', edit_article_path(article)
+        = link_to 'Edit', edit_article_path(article), id: "articles_index_edit_url"
       %td
-        = link_to 'Detail', article_path(article)
+        = link_to 'Detail', article_path(article), id: "articles_index_detail_url"
       %td
-        = link_to 'Destroy', article_path(article), method: :delete, data: {confirm: 'Are you sure ?'}
+        = link_to 'Destroy', article_path(article), method: :delete, data: {confirm: 'Are you sure ?'}, id: "articles_index_destroy_url"
