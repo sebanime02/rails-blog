@@ -4,7 +4,7 @@
   <% if Rails.env.production? %>
   analytics.load("<%= ENV['SEGMENT_API_ID'] %>");
   <% end %>
-  
+
   analytics.page();
   }}();
 </script>
