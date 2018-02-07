@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
   get 'welcome/index'
 
+  get 'thanks' => 'welcome#show_thanks_page'
+
   resources :articles do # Resource REST
-    resources :comments #Nested API REST 
+    resources :comments #Nested API REST
   end
   root 'welcome#index'
 

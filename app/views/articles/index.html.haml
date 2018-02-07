@@ -20,3 +20,5 @@
         = link_to 'Detail', article_path(article), id: "articles_index_detail_url"
       %td
         = link_to 'Destroy', article_path(article), method: :delete, data: {confirm: 'Are you sure ?'}, id: "articles_index_destroy_url"
+
+= link_to 'Go to thanks', {controller:'welcome',action:'show_thanks_page' }

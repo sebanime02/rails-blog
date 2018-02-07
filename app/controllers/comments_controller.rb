@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+
   def create
     @article = Article.find(params[:article_id])
     logger.debug "Articles #{params[:comment]}"
