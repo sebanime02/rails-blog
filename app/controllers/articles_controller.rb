@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
     #This is the action for create articles inside Articles controller
     @article = Article.new(article_params)
     if @article.save
-      redirect_to @article
+      redirect_to articles_path
     else
       render 'new'
     end
