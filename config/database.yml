@@ -27,3 +27,13 @@ production:
   adapter: postgresql
   database: blog_production
   timeout: 5000
+
+staging:
+  adapter: postgresql
+  database: blog_staging
+  timeout: 5000
+
+staging_webgl:
+  adapter: postgresql
+  database: blog_staging_webgl
+  timeout: 5000
