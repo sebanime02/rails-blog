@@ -1,3 +1,21 @@
 // Place all the styles related to the Articles controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.price-display
+{
+  text-align: center;
+  padding: 8px 16px;
+  background-color: #F68386;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.11);
+  color: white;
+  font-family: "Clone Rounded Latn", Arial, serif;
+  text-transform: uppercase;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  border-radius: 50px;
+  position: fixed;
+  cursor: pointer;
+  bottom: 20px;
+  left:calc(66vw - 220px);
+}
