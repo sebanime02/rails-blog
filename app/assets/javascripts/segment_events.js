@@ -4,6 +4,12 @@ $(function()
 {
   console.log('Before click');
 
+    $('.price-display').click(function()
+    {
+      //alert( "Click" );
+
+    });
+
     $("#url_home").on('click',function()
       {
         var event_properties_1 =
@@ -28,6 +34,7 @@ $(function()
         };
         track_events('Click Edit List', event_properties_2);
       });
+
 
     function track_events(name, properties)
     {
