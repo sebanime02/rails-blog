@@ -4,11 +4,11 @@ $(function()
 {
   console.log('Before click');
 
-    $('.price-display').click(function()
+    $('#iframe_id').on('click', function()
     {
-      //alert( "Click" );
-
+      console.log('Click I frame');
     });
+
 
     $("#url_home").on('click',function()
       {
