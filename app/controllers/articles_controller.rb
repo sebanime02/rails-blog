@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-
+  include Trackable
 
   def index
     @articles = Article.all
@@ -19,6 +19,7 @@ class ArticlesController < ApplicationController
     #This is the action for create articles inside Articles controller
     @article = Article.new(article_params)
     if @article.save
+      track_event('Conversions', 'click submit','click submit',0)
       redirect_to articles_path
     else
       render 'new'
