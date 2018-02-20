@@ -11,11 +11,11 @@ module Trackable
   end
 
   def push_to_google_analytics(event_type, options)
-    Net::HTTP.get_response URI 'http://www.google-analytics.com/collect?' + {
+    Net::HTTP.get_response(URI('http://www.google-analytics.com/collect?' + {
       v:   1, # Google Analytics Version
-      tid: ENV['GA_TRACKING_ID'],
-      cid: '555',
-      t:   event_type
-    }.merge(options).to_query
+      tid: ENV['GA_TRACKING_ID'],# Google Analytics TRACKING ID
+      cid: '555', # id user
+      t:   event_type 
+    }.merge(options).to_query))
   end
 end
